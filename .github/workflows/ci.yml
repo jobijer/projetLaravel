@@ -2,7 +2,7 @@ name: CI Laravel
 
 on: # déclencheurs
   push:
-    branches: [ "*" ]
+    branches: [ feature/pipeline-ci ]
   pull_request:
     branches: [ main ]
 
