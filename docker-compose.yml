@@ -1,10 +1,10 @@
 services:
-  app:                          # nom du service (choix libre)
-    build:          # utiliser le dockerfile
+  app:
+    build:
       context: .
       dockerfile: docker/Dockerfile
     volumes:
-      - .:/var/www/html         # code source montÃ©
+      - .:/var/www/html
       - ./docker/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
     networks:
       - laravel
@@ -12,12 +12,12 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "8080:80"               # port hÃ´te:port conteneur
+      - "8080:80"
     volumes:
       - .:/var/www/html
       - ./docker/nginx.conf:/etc/nginx/conf.d/nginx.conf
     depends_on:
-      - app                     # dÃ©marre aprÃ¨s app
+      - app
     networks:
       - laravel
 
@@ -29,12 +29,27 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
-      - mysql_data:/var/lib/mysql   # volume nommÃ© pour persister les donnÃ©es
+      - mysql_data:/var/lib/mysql
     networks:
       - laravel
 
+  node:
+    build:
+      context: .
+      dockerfile: docker/node/Dockerfile
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /home/www/.ssh:/root/.ssh:ro
+    entrypoint: ["tail", "-f", "/dev/null"]
+    networks:
+      - laravel
+    environment:
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+
+
 volumes:
-  mysql_data:                   # volume nommÃ© dÃ©clarÃ© ici
+  mysql_data:
 
 networks:
-  laravel:                      # rÃ©seau interne entre les services
+  laravel:
