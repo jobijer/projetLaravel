@@ -40,6 +40,7 @@ services:
     working_dir: /app
     volumes:
       - .:/app
+      - ~/.ssh:/root/.ssh:ro
     entrypoint: ["tail", "-f", "/dev/null"]
     networks:
       - laravel
